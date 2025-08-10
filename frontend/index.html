@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CRM Dashboard - Customer Relationship Management</title>
+    <meta name="description" content="Modern CRM Dashboard for managing customers, leads, contacts, and sales pipeline">
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="login-form">
+                <h2><i class="fas fa-user-circle"></i> CRM Login</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <input type="email" id="loginEmail" placeholder="Email" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <span class="btn-text">Login</span>
+                        <span class="loading-spinner" style="display: none;"></span>
+                    </button>
+                </form>
+                <p>Don't have an account? <a href="#" onclick="showRegister()">Register here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Page -->
+    <div id="registerPage" class="page">
+        <div class="login-container">
+            <div class="login-form">
+                <h2><i class="fas fa-user-plus"></i> Register</h2>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <input type="text" id="registerUsername" placeholder="Username" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="registerEmail" placeholder="Email" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="registerPassword" placeholder="Password" required>
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <span class="btn-text">Register</span>
+                        <span class="loading-spinner" style="display: none;"></span>
+                    </button>
+                </form>
+                <p>Already have an account? <a href="#" onclick="showLogin()">Login here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="page">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h1>CRM Dashboard</h1>
+                </div>
+                <div class="user-info">
+                    <span id="userEmail"></span>
+                    <button onclick="logout()" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('customers')">
+                <i class="fas fa-users"></i> Customers
+            </button>
+            <button class="tab-btn" onclick="showTab('leads')">
+                <i class="fas fa-bullseye"></i> Leads
+            </button>
+            <button class="tab-btn" onclick="showTab('contacts')">
+                <i class="fas fa-address-book"></i> Contacts
+            </button>
+            <button class="tab-btn" onclick="showTab('stages')">
+                <i class="fas fa-tasks"></i> Stages
+            </button>
+            <button class="tab-btn" onclick="showTab('communication')">
+                <i class="fas fa-comments"></i> Communication
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Dashboard Stats -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number" id="totalCustomers">0</div>
+                    <div class="stat-label">Total Customers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="stat-number" id="totalLeads">0</div>
+                    <div class="stat-label">Active Leads</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-address-book"></i>
+                    </div>
+                    <div class="stat-number" id="totalContacts">0</div>
+                    <div class="stat-label">Total Contacts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-number" id="totalStages">0</div>
+                    <div class="stat-label">Pipeline Stages</div>
+                </div>
+            </div>
+
+            <!-- Customers Tab -->
+            <div id="customersTab" class="tab-content active">
+                <div class="content-header">
+                    <h2>Customer Management</h2>
+                    <button class="btn-primary" onclick="showAddCustomerModal()">
+                        <i class="fas fa-plus"></i> Add Customer
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table id="customersTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Company</th>
+                                <th>Address</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Leads Tab -->
+            <div id="leadsTab" class="tab-content">
+                <div class="content-header">
+                    <h2>Lead Management</h2>
+                    <button class="btn-primary" onclick="showAddLeadModal()">
+                        <i class="fas fa-plus"></i> Add Lead
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table id="leadsTable">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Source</th>
+                                <th>Status</th>
+                                <th>Value</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Contacts Tab -->
+            <div id="contactsTab" class="tab-content">
+                <div class="content-header">
+                    <h2>Contact Management</h2>
+                    <button class="btn-primary" onclick="showAddContactModal()">
+                        <i class="fas fa-plus"></i> Add Contact
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table id="contactsTable">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Type</th>
+                                <th>Value</th>
+                                <th>Primary</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Stages Tab -->
+            <div id="stagesTab" class="tab-content">
+                <div class="content-header">
+                    <h2>Stage Management</h2>
+                    <button class="btn-primary" onclick="showAddStageModal()">
+                        <i class="fas fa-plus"></i> Add Stage
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table id="stagesTable">
+                        <thead>
+                            <tr>
+                                <th>Lead</th>
+                                <th>Customer</th>
+                                <th>Stage Name</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Communication Tab -->
+            <div id="communicationTab" class="tab-content">
+                <div class="content-header">
+                    <h2>Communication Hub</h2>
+                    <div class="comm-actions">
+                        <button class="btn-primary" onclick="showSendEmailModal()">
+                            <i class="fas fa-envelope"></i> Send Email
+                        </button>
+                        <button class="btn-primary" onclick="showSendSMSModal()">
+                            <i class="fas fa-sms"></i> Send SMS
+                        </button>
+                        <button class="btn-primary" onclick="showMakeCallModal()">
+                            <i class="fas fa-phone"></i> Make Call
+                        </button>
+                    </div>
+                </div>
+                <div class="communication-container">
+                    <div class="comm-history">
+                        <h3>Communication History</h3>
+                        <div id="communicationHistory"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modalOverlay" class="modal-overlay">
+        <!-- Customer Modal -->
+        <div id="customerModal" class="modal">
+            <div class="modal-header">
+                <h3 id="customerModalTitle">Add Customer</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="customerForm">
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="customerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone *</label>
+                    <input type="tel" id="customerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>Company</label>
+                    <input type="text" id="customerCompany">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea id="customerAddress" rows="3"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lead Modal -->
+        <div id="leadModal" class="modal">
+            <div class="modal-header">
+                <h3 id="leadModalTitle">Add Lead</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="leadForm">
+                <div class="form-group">
+                    <label>Customer *</label>
+                    <select id="leadCustomer" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Lead Source *</label>
+                    <input type="text" id="leadSource" required>
+                </div>
+                <div class="form-group">
+                    <label>Status *</label>
+                    <select id="leadStatus" required>
+                        <option value="new">New</option>
+                        <option value="qualified">Qualified</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Value</label>
+                    <input type="number" id="leadValue" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="leadDescription" rows="3"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Contact Modal -->
+        <div id="contactModal" class="modal">
+            <div class="modal-header">
+                <h3 id="contactModalTitle">Add Contact</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label>Customer *</label>
+                    <select id="contactCustomer" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Contact Type *</label>
+                    <select id="contactType" required>
+                        <option value="email">Email</option>
+                        <option value="phone">Phone</option>
+                        <option value="address">Address</option>
+                        <option value="social">Social</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Contact Value *</label>
+                    <input type="text" id="contactValue" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="contactPrimary"> Primary Contact
+                    </label>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Stage Modal -->
+        <div id="stageModal" class="modal">
+            <div class="modal-header">
+                <h3 id="stageModalTitle">Add Stage</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="stageForm">
+                <div class="form-group">
+                    <label>Lead *</label>
+                    <select id="stageLead" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Stage Name *</label>
+                    <input type="text" id="stageName" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Email Modal -->
+        <div id="emailModal" class="modal">
+            <div class="modal-header">
+                <h3>Send Email</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="emailForm">
+                <div class="form-group">
+                    <label>Customer</label>
+                    <select id="emailCustomer"></select>
+                </div>
+                <div class="form-group">
+                    <label>To Email *</label>
+                    <input type="email" id="emailRecipient" required>
+                </div>
+                <div class="form-group">
+                    <label>Subject *</label>
+                    <input type="text" id="emailSubject" required>
+                </div>
+                <div class="form-group">
+                    <label>Message *</label>
+                    <textarea id="emailMessage" rows="5" required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Send Email</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- SMS Modal -->
+        <div id="smsModal" class="modal">
+            <div class="modal-header">
+                <h3>Send SMS</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="smsForm">
+                <div class="form-group">
+                    <label>Customer</label>
+                    <select id="smsCustomer"></select>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="smsRecipient" required>
+                </div>
+                <div class="form-group">
+                    <label>Message *</label>
+                    <textarea id="smsMessage" rows="3" maxlength="160" required></textarea>
+                    <small>160 characters max</small>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Send SMS</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Call Modal -->
+        <div id="callModal" class="modal">
+            <div class="modal-header">
+                <h3>Make Call</h3>
+                <button onclick="closeModal()" class="close-btn">&times;</button>
+            </div>
+            <form id="callForm">
+                <div class="form-group">
+                    <label>Customer</label>
+                    <select id="callCustomer"></select>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="callRecipient" required>
+                </div>
+                <div class="form-group">
+                    <label>Call Notes</label>
+                    <textarea id="callMessage" rows="3" placeholder="Notes about the call..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Make Call</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
